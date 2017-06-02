@@ -107,6 +107,29 @@ inline AtomicType<std::string>::AtomicType(){
     H5Tset_cset(_hid, H5T_CSET_UTF8);
 }
 
+// std::complex<..>
+template <>
+inline AtomicType< std::complex<double> >::AtomicType() {
+	struct pods {
+		double re;
+		double im;
+	};
+
+	_hid = H5Tcreate(H5T_COMPOUND, sizeof(pods));
+	H5Tinsert(_hid, "r", HOFFSET(pods, re), H5T_NATIVE_DOUBLE);
+	H5Tinsert(_hid, "i", HOFFSET(pods, im), H5T_NATIVE_DOUBLE);
+}
+
+template <>
+inline AtomicType< std::complex<float> >::AtomicType() {
+	struct pods {
+		float re;
+		float im;
+	};
+
+	_hid = H5Tcreate(H5T_COMPOUND, sizeof(pods));
+	H5Tinsert(_hid, "r", HOFFSET(pods, re), H5T_NATIVE_FLOAT);
+	H5Tinsert(_hid, "i", HOFFSET(pods, im), H5T_NATIVE_FLOAT);
 }
 
 #endif // H5DATATYPE_MISC_HPP
